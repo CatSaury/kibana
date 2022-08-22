@@ -48,6 +48,7 @@ import { HeaderNavControls } from './header_nav_controls';
 import { HeaderActionMenu } from './header_action_menu';
 import { HeaderExtension } from './header_extension';
 import { HeaderTopBanner } from './header_top_banner';
+import { CustomNavControl } from './custom_nav_control';
 
 export interface HeaderProps {
   kibanaVersion: string;
@@ -68,6 +69,7 @@ export interface HeaderProps {
   navControlsLeft$: Observable<readonly ChromeNavControl[]>;
   navControlsCenter$: Observable<readonly ChromeNavControl[]>;
   navControlsRight$: Observable<readonly ChromeNavControl[]>;
+  customNavControl$: Observable<ChromeNavControl | undefined>;
   basePath: HttpStart['basePath'];
   isLocked$: Observable<boolean>;
   loadingCount$: ReturnType<HttpStart['getLoadingCount$']>;
@@ -140,7 +142,13 @@ export function Header({
               {
                 items: [
                   <EuiHideFor sizes={['m', 'l', 'xl']}>
-                    <HeaderNavControls navControls$={observables.navControlsCenter$} />
+                    <>
+                      <CustomNavControl navControl$={observables.customNavControl$} />
+                      <HeaderNavControls navControls$={observables.navControlsCenter$} />
+                    </>
+                  </EuiHideFor>,
+                  <EuiHideFor sizes={['xs', 's']}>
+                    <CustomNavControl navControl$={observables.customNavControl$} />
                   </EuiHideFor>,
                   <HeaderHelpMenu
                     helpExtension$={observables.helpExtension$}

@@ -20,7 +20,7 @@ import type { NotificationsStart } from '@kbn/core-notifications-browser';
 import type { InternalApplicationStart } from '../application';
 import { KIBANA_ASK_ELASTIC_LINK } from './constants';
 import { type ChromeDocTitle, DocTitleService } from './doc_title';
-import { type ChromeNavControls, NavControlsService } from './nav_controls';
+import { type ChromeNavControl, ChromeNavControls, NavControlsService } from './nav_controls';
 import { type ChromeNavLink, NavLinksService } from './nav_links';
 import { type ChromeRecentlyAccessed, RecentlyAccessedService } from './recently_accessed';
 import { Header } from './ui';
@@ -111,6 +111,7 @@ export class ChromeService {
     >(undefined);
     const badge$ = new BehaviorSubject<ChromeBadge | undefined>(undefined);
     const customNavLink$ = new BehaviorSubject<ChromeNavLink | undefined>(undefined);
+    const customNavControl$ = new BehaviorSubject<ChromeNavControl | undefined>(undefined);
     const helpSupportUrl$ = new BehaviorSubject<string>(KIBANA_ASK_ELASTIC_LINK);
     const isNavDrawerLocked$ = new BehaviorSubject(localStorage.getItem(IS_LOCKED_KEY) === 'true');
 
@@ -224,6 +225,7 @@ export class ChromeService {
           navControlsLeft$={navControls.getLeft$()}
           navControlsCenter$={navControls.getCenter$()}
           navControlsRight$={navControls.getRight$()}
+          customNavControl$={customNavControl$.pipe(takeUntil(this.stop$))}
           onIsLockedUpdate={setIsNavDrawerLocked}
           isLocked$={getIsNavDrawerLocked$}
           http={http}
@@ -268,6 +270,12 @@ export class ChromeService {
 
       setCustomNavLink: (customNavLink?: ChromeNavLink) => {
         customNavLink$.next(customNavLink);
+      },
+
+      getCustomNavControl$: () => customNavControl$.pipe(takeUntil(this.stop$)),
+
+      setCustomNavControl: (customNavControl: ChromeNavControl) => {
+        customNavControl$.next(customNavControl);
       },
 
       setHeaderBanner: (headerBanner?: ChromeUserBanner) => {

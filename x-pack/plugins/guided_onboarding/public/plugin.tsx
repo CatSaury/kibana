@@ -61,8 +61,7 @@ export class GuidedOnboardingPlugin
   }
 
   public start(core: CoreStart): GuidedOnboardingPluginStart {
-    core.chrome.navControls.registerRight({
-      order: 1000,
+    core.chrome.setCustomNavControl({
       mount: (target) => this.mount(target, core.theme.theme$, core.http),
     });
 

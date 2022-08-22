@@ -10,7 +10,7 @@ import { EuiBreadcrumb, IconType } from '@elastic/eui';
 import { Observable } from 'rxjs';
 import type { MountPoint } from '@kbn/core-mount-utils-browser';
 import { ChromeDocTitle } from './doc_title';
-import { ChromeNavControls } from './nav_controls';
+import { ChromeNavControl, ChromeNavControls } from './nav_controls';
 import { ChromeNavLinks, ChromeNavLink } from './nav_links';
 import { ChromeRecentlyAccessed } from './recently_accessed';
 import { ChromeHelpExtensionMenuLink } from './ui/header/header_help_menu';
@@ -145,6 +145,16 @@ export interface ChromeStart {
    * Override the current set of custom nav link
    */
   setCustomNavLink(newCustomNavLink?: Partial<ChromeNavLink>): void;
+
+  /**
+   * Get an observable of the current custom nav control
+   */
+  getCustomNavControl$(): Observable<ChromeNavControl | undefined>;
+
+  /**
+   * Override the current custom nav control
+   */
+  setCustomNavControl(customNavControl?: ChromeNavControl): void;
 
   /**
    * Get an observable of the current custom help conttent
