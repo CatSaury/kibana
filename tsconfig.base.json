@@ -345,6 +345,8 @@
       "@kbn/graph-plugin/*": ["x-pack/plugins/graph/*"],
       "@kbn/grokdebugger-plugin": ["x-pack/plugins/grokdebugger"],
       "@kbn/grokdebugger-plugin/*": ["x-pack/plugins/grokdebugger/*"],
+      "@kbn/guided-onboarding-example-plugin": ["x-pack/plugins/guided_onboarding_example"],
+      "@kbn/guided-onboarding-example-plugin/*": ["x-pack/plugins/guided_onboarding_example/*"],
       "@kbn/guided-onboarding-plugin": ["x-pack/plugins/guided_onboarding"],
       "@kbn/guided-onboarding-plugin/*": ["x-pack/plugins/guided_onboarding/*"],
       "@kbn/index-lifecycle-management-plugin": ["x-pack/plugins/index_lifecycle_management"],

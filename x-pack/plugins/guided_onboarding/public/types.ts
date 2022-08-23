@@ -6,12 +6,14 @@
  */
 
 import { NavigationPublicPluginStart } from '@kbn/navigation-plugin/public';
+import { ApiService } from './services/api';
 
-export interface GuidedOnboardingPluginSetup {
-  getGreeting: () => string;
-}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface GuidedOnboardingPluginStart {}
+export interface GuidedOnboardingPluginSetup {}
+
+export interface GuidedOnboardingPluginStart {
+  guidedOnboardingApi: ApiService;
+}
 
 export interface AppPluginStartDependencies {
   navigation: NavigationPublicPluginStart;
@@ -36,4 +38,9 @@ export interface GuideConfig {
     url: string;
   };
   steps: StepConfig[];
+}
+
+export interface GuidedOnboardingState {
+  active_guide: UseCase;
+  active_step: string;
 }

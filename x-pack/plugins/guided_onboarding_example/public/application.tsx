@@ -9,19 +9,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppMountParameters, CoreStart } from '@kbn/core/public';
 import { AppPluginStartDependencies } from './types';
-import { GuidedOnboardingApp } from './components/app';
+import { GuidedOnboardingExampleApp } from './components/app';
 
 export const renderApp = (
   { notifications, http }: CoreStart,
-  { navigation }: AppPluginStartDependencies,
+  { navigation, guidedOnboarding }: AppPluginStartDependencies,
   { appBasePath, element }: AppMountParameters
 ) => {
   ReactDOM.render(
-    <GuidedOnboardingApp
+    <GuidedOnboardingExampleApp
       basename={appBasePath}
       notifications={notifications}
       http={http}
       navigation={navigation}
+      guidedOnboarding={guidedOnboarding}
     />,
     element
   );

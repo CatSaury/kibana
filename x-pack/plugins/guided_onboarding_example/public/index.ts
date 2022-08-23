@@ -7,15 +7,11 @@
 
 import './index.scss';
 
-import { GuidedOnboardingPlugin } from './plugin';
+import { GuidedOnboardingExamplePlugin } from './plugin';
 
 // This exports static code and TypeScript types,
 // as well as, Kibana Platform `plugin()` initializer.
 export function plugin() {
-  return new GuidedOnboardingPlugin();
+  return new GuidedOnboardingExamplePlugin();
 }
-export {
-  GuidedOnboardingPluginSetup,
-  GuidedOnboardingPluginStart,
-  GuidedOnboardingState,
-} from './types';
+export { GuidedOnboardingExamplePluginSetup, GuidedOnboardingExamplePluginStart } from './types';

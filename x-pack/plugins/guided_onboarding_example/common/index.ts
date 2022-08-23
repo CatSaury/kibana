@@ -5,7 +5,5 @@
  * 2.0.
  */
 
-export const PLUGIN_ID = 'guidedOnboarding';
-export const PLUGIN_NAME = 'guidedOnboarding';
-
-export const API_BASE_PATH = '/api/guided_onboarding';
+export const PLUGIN_ID = 'guidedOnboardingExample';
+export const PLUGIN_NAME = 'guidedOnboardingExample';

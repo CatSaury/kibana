@@ -31,21 +31,26 @@ import {
 import { CoreStart } from '@kbn/core/public';
 import { NavigationPublicPluginStart } from '@kbn/navigation-plugin/public';
 
+import { GuidedOnboardingPluginStart } from '@kbn/guided-onboarding-plugin/public/types';
 import { PLUGIN_ID, PLUGIN_NAME } from '../../common';
 
-interface GuidedOnboardingAppDeps {
+interface GuidedOnboardingExampleAppDeps {
   basename: string;
   notifications: CoreStart['notifications'];
   http: CoreStart['http'];
   navigation: NavigationPublicPluginStart;
+  guidedOnboarding: GuidedOnboardingPluginStart;
 }
 
-export const GuidedOnboardingApp = ({
+export const GuidedOnboardingExampleApp = ({
   basename,
   notifications,
   http,
   navigation,
-}: GuidedOnboardingAppDeps) => {
+  guidedOnboarding,
+}: GuidedOnboardingExampleAppDeps) => {
+  const { guidedOnboardingApi } = guidedOnboarding;
+
   // Use React hooks to manage state.
   const [selectedGuide, setSelectedGuide] = useState<string | undefined>(undefined);
   const [selectedStep, setSelectedStep] = useState<number | undefined>(undefined);
@@ -74,6 +79,12 @@ export const GuidedOnboardingApp = ({
         }),
       })
       .then((res) => {
+        // TODO this service will eventually also update the SO
+        // For now, it's just updating the component state
+        guidedOnboardingApi.updateGuideState$({
+          active_guide: selectedGuide,
+          active_step: selectedStep,
+        });
         // Use the core notifications service to display a success message.
         notifications.toasts.addSuccess(
           i18n.translate('guidedOnboarding.dataUpdated', {
@@ -100,7 +111,7 @@ export const GuidedOnboardingApp = ({
                 <EuiTitle size="l">
                   <h1>
                     <FormattedMessage
-                      id="guidedOnboarding.pluginName"
+                      id="guidedOnboardingExample.pluginName"
                       defaultMessage="{name}"
                       values={{ name: PLUGIN_NAME }}
                     />
@@ -112,7 +123,7 @@ export const GuidedOnboardingApp = ({
                   <EuiTitle>
                     <h2>
                       <FormattedMessage
-                        id="guidedOnboarding.title"
+                        id="guidedOnboardingExample.title"
                         defaultMessage="Saved objects POC"
                       />
                     </h2>
@@ -122,7 +133,7 @@ export const GuidedOnboardingApp = ({
                   <EuiText>
                     <p>
                       <FormattedMessage
-                        id="guidedOnboarding.timestampText"
+                        id="guidedOnboardingExample.timestampText"
                         defaultMessage="State: {state}"
                         values={{
                           state: `guide: ${selectedGuide}, step: ${selectedStep}` ?? 'Unknown',
@@ -132,7 +143,10 @@ export const GuidedOnboardingApp = ({
                   </EuiText>
                   <EuiSpacer />
                   <EuiButton type="primary" size="s" onClick={getDataRequest}>
-                    <FormattedMessage id="guidedOnboarding.buttonText" defaultMessage="Get data" />
+                    <FormattedMessage
+                      id="guidedOnboardingExample.buttonText"
+                      defaultMessage="Get data"
+                    />
                   </EuiButton>
                   <EuiSpacer />
                   <EuiFlexGroup style={{ maxWidth: 600 }}>

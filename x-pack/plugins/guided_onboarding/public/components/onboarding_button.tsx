@@ -27,18 +27,12 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 
-import type { HttpStart } from '@kbn/core-http-browser';
-
 import { guidesConfig } from '../constants';
-import type { GuideConfig, StepStatus, UseCase } from '../types';
-
-interface GuidedOnboardingState {
-  active_guide: UseCase;
-  active_step: string;
-}
+import type { GuideConfig, StepStatus, GuidedOnboardingState } from '../types';
+import { ApiService } from '../services/api';
 
 interface Props {
-  http: HttpStart;
+  api: ApiService;
 }
 
 const getConfig = (state?: GuidedOnboardingState): GuideConfig | undefined => {
@@ -58,7 +52,7 @@ const getStepStatus = (stepIndex: number, activeStep?: string): StepStatus => {
   return Number(activeStep) > stepIndex + 1 ? 'complete' : 'incomplete';
 };
 
-export const GuidedOnboardingButton = ({ http }: Props) => {
+export const GuidedOnboardingButton = ({ api }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const [guidedOnboardingState, setGuidedOnboardingState] = useState<
@@ -66,10 +60,16 @@ export const GuidedOnboardingButton = ({ http }: Props) => {
   >(undefined);
 
   useEffect(() => {
-    http.get<{ state: GuidedOnboardingState }>('/api/guided_onboarding/state').then((res) => {
-      setGuidedOnboardingState(res.state);
+    const fetchData = async () => await api.fetchGuideState();
+    fetchData();
+  }, [api]);
+
+  useEffect(() => {
+    const subscription = api.onboardingGuideState$.subscribe((newState) => {
+      setGuidedOnboardingState(newState);
     });
-  }, [http, setGuidedOnboardingState]);
+    return () => subscription.unsubscribe();
+  }, [api]);
 
   const { euiTheme } = useEuiTheme();
 
