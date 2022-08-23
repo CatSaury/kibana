@@ -14,9 +14,14 @@
     "../../../typings/**/*",
   ],
   "references": [
-    { "path": "../../../src/core/tsconfig.json" },
-    // required plugins
-    // optional plugins
-    // required bundles
+    {
+      "path": "../../../src/core/tsconfig.json"
+    },
+    {
+      "path": "../../../src/plugins/navigation/tsconfig.json"
+    },
+    {
+      "path": "../../../src/plugins/kibana_react/tsconfig.json"
+    },
   ]
 }
