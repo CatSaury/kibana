@@ -50,8 +50,8 @@ export function defineRoutes(router: IRouter) {
       path: '/api/guided_onboarding/state',
       validate: {
         body: schema.object({
-          active_guide: schema.string(),
-          active_step: schema.number(),
+          active_guide: schema.maybe(schema.string()),
+          active_step: schema.maybe(schema.number()),
         }),
       },
     },

@@ -36,10 +36,11 @@ interface Props {
 }
 
 const getConfig = (state?: GuidedOnboardingState): GuideConfig | undefined => {
-  if (!state) {
-    return undefined;
+  if (state?.active_guide) {
+    return guidesConfig[state.active_guide];
   }
-  return guidesConfig[state.active_guide];
+
+  return undefined;
 };
 
 const getStepStatus = (stepIndex: number, activeStep?: string): StepStatus => {

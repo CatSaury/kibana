@@ -41,6 +41,6 @@ export interface GuideConfig {
 }
 
 export interface GuidedOnboardingState {
-  active_guide: UseCase;
-  active_step: string;
+  active_guide: UseCase | undefined;
+  active_step: string | undefined;
 }

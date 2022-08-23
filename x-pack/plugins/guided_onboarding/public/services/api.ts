@@ -35,8 +35,23 @@ export class ApiService {
     }
   }
 
-  public updateGuideState$(newState: GuidedOnboardingState) {
-    this.onboardingGuideState$.next(newState);
+  public async updateGuideState$(newState: GuidedOnboardingState) {
+    if (!this.client) {
+      throw new Error('ApiService has not be initialized.');
+    }
+
+    try {
+      const response = await this.client.put<{ state: GuidedOnboardingState }>(
+        `${API_BASE_PATH}/state`,
+        {
+          body: JSON.stringify(newState),
+        }
+      );
+      this.onboardingGuideState$.next(newState);
+      return response;
+    } catch (error) {
+      // TODO handle error
+    }
   }
 }
 

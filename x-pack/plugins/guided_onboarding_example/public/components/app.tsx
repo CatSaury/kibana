@@ -31,7 +31,11 @@ import {
 import { CoreStart } from '@kbn/core/public';
 import { NavigationPublicPluginStart } from '@kbn/navigation-plugin/public';
 
-import { GuidedOnboardingPluginStart } from '@kbn/guided-onboarding-plugin/public/types';
+import {
+  GuidedOnboardingPluginStart,
+  GuidedOnboardingState,
+  UseCase,
+} from '@kbn/guided-onboarding-plugin/public/types';
 import { PLUGIN_ID, PLUGIN_NAME } from '../../common';
 
 interface GuidedOnboardingExampleAppDeps {
@@ -52,12 +56,12 @@ export const GuidedOnboardingExampleApp = ({
   const { guidedOnboardingApi } = guidedOnboarding;
 
   // Use React hooks to manage state.
-  const [selectedGuide, setSelectedGuide] = useState<string | undefined>(undefined);
-  const [selectedStep, setSelectedStep] = useState<number | undefined>(undefined);
+  const [selectedGuide, setSelectedGuide] = useState<UseCase | undefined>(undefined);
+  const [selectedStep, setSelectedStep] = useState<string | undefined>(undefined);
 
   const getDataRequest = () => {
     // Use the core http service to make a response to the server API.
-    http.get('/api/guided_onboarding/state').then((res) => {
+    http.get<{ state: GuidedOnboardingState }>('/api/guided_onboarding/state').then((res) => {
       // Use the core notifications service to display a success message.
       notifications.toasts.addSuccess(
         i18n.translate('guidedOnboarding.dataUpdated', {
@@ -69,29 +73,19 @@ export const GuidedOnboardingExampleApp = ({
     });
   };
 
-  const sendUpdateRequest = () => {
-    // Use the core http service to make a response to the server API.
-    http
-      .put('/api/guided_onboarding/state', {
-        body: JSON.stringify({
-          active_guide: selectedGuide,
-          active_step: selectedStep,
-        }),
-      })
-      .then((res) => {
-        // TODO this service will eventually also update the SO
-        // For now, it's just updating the component state
-        guidedOnboardingApi.updateGuideState$({
-          active_guide: selectedGuide,
-          active_step: selectedStep,
-        });
-        // Use the core notifications service to display a success message.
-        notifications.toasts.addSuccess(
-          i18n.translate('guidedOnboarding.dataUpdated', {
-            defaultMessage: 'Data updated',
-          })
-        );
-      });
+  const sendUpdateRequest = async () => {
+    const response = await guidedOnboardingApi.updateGuideState$({
+      active_guide: selectedGuide,
+      active_step: selectedStep,
+    });
+
+    if (response) {
+      notifications.toasts.addSuccess(
+        i18n.translate('guidedOnboardingExample.dataUpdated', {
+          defaultMessage: 'Data updated',
+        })
+      );
+    }
   };
 
   // Render the application DOM.
@@ -161,7 +155,16 @@ export const GuidedOnboardingExampleApp = ({
                             { value: '', text: 'unset' },
                           ]}
                           value={selectedGuide}
-                          onChange={(e) => setSelectedGuide(e.target.value)}
+                          onChange={(e) => {
+                            const value = e.target.value as UseCase;
+                            const shouldResetState = value.trim().length === 0;
+                            if (shouldResetState) {
+                              setSelectedGuide(undefined);
+                              setSelectedStep(undefined);
+                            } else {
+                              setSelectedGuide(value);
+                            }
+                          }}
                         />
                       </EuiFormRow>
                     </EuiFlexItem>
@@ -169,7 +172,7 @@ export const GuidedOnboardingExampleApp = ({
                       <EuiFormRow label="Step">
                         <EuiFieldNumber
                           value={selectedStep}
-                          onChange={(e) => setSelectedStep(Number(e.target.value))}
+                          onChange={(e) => setSelectedStep(e.target.value)}
                         />
                       </EuiFormRow>
                     </EuiFlexItem>
