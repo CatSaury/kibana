@@ -30,7 +30,8 @@ export class GuidedOnboardingPlugin
     // Initialize services
     apiService.setup(http);
 
-    chrome.setCustomNavControl({
+    chrome.navControls.registerExtension({
+      order: 1000,
       mount: (target) => this.mount(target, theme.theme$, apiService),
     });
 

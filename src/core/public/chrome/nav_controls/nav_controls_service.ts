@@ -40,12 +40,16 @@ export interface ChromeNavControls {
   registerRight(navControl: ChromeNavControl): void;
   /** Register a nav control to be presented on the top-center side of the chrome header. */
   registerCenter(navControl: ChromeNavControl): void;
+  /** Register an extension to be presented on top-right side of the chrome header. */
+  registerExtension(navControl: ChromeNavControl): void;
   /** @internal */
   getLeft$(): Observable<ChromeNavControl[]>;
   /** @internal */
   getRight$(): Observable<ChromeNavControl[]>;
   /** @internal */
   getCenter$(): Observable<ChromeNavControl[]>;
+  /** @internal */
+  getExtension$(): Observable<ChromeNavControl[]>;
 }
 
 /** @internal */
@@ -56,6 +60,7 @@ export class NavControlsService {
     const navControlsLeft$ = new BehaviorSubject<ReadonlySet<ChromeNavControl>>(new Set());
     const navControlsRight$ = new BehaviorSubject<ReadonlySet<ChromeNavControl>>(new Set());
     const navControlsCenter$ = new BehaviorSubject<ReadonlySet<ChromeNavControl>>(new Set());
+    const navControlsExtension$ = new BehaviorSubject<ReadonlySet<ChromeNavControl>>(new Set());
 
     return {
       // In the future, registration should be moved to the setup phase. This
@@ -69,6 +74,9 @@ export class NavControlsService {
       registerCenter: (navControl: ChromeNavControl) =>
         navControlsCenter$.next(new Set([...navControlsCenter$.value.values(), navControl])),
 
+      registerExtension: (navControl: ChromeNavControl) =>
+        navControlsExtension$.next(new Set([...navControlsExtension$.value.values(), navControl])),
+
       getLeft$: () =>
         navControlsLeft$.pipe(
           map((controls) => sortBy([...controls.values()], 'order')),
@@ -81,6 +89,11 @@ export class NavControlsService {
         ),
       getCenter$: () =>
         navControlsCenter$.pipe(
+          map((controls) => sortBy([...controls.values()], 'order')),
+          takeUntil(this.stop$)
+        ),
+      getExtension$: () =>
+        navControlsExtension$.pipe(
           map((controls) => sortBy([...controls.values()], 'order')),
           takeUntil(this.stop$)
         ),
