@@ -69,12 +69,10 @@ export interface HeaderProps {
   navControlsCenter$: Observable<readonly ChromeNavControl[]>;
   navControlsRight$: Observable<readonly ChromeNavControl[]>;
   navControlsExtension$: Observable<readonly ChromeNavControl[]>;
-  customNavControl$: Observable<ChromeNavControl | undefined>;
   basePath: HttpStart['basePath'];
   isLocked$: Observable<boolean>;
   loadingCount$: ReturnType<HttpStart['getLoadingCount$']>;
   onIsLockedUpdate: OnIsLockedUpdate;
-  http: HttpStart;
 }
 
 export function Header({
@@ -85,7 +83,6 @@ export function Header({
   onIsLockedUpdate,
   homeHref,
   breadcrumbsAppendExtension$,
-  http,
   ...observables
 }: HeaderProps) {
   const isVisible = useObservable(observables.isVisible$, false);
