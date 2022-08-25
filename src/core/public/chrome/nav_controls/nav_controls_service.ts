@@ -40,7 +40,7 @@ export interface ChromeNavControls {
   registerRight(navControl: ChromeNavControl): void;
   /** Register a nav control to be presented on the top-center side of the chrome header. */
   registerCenter(navControl: ChromeNavControl): void;
-  /** Register an extension to be presented on top-right side of the chrome header. */
+  /** Register an extension to be presented to the left of the top-right side of the chrome header. */
   registerExtension(navControl: ChromeNavControl): void;
   /** @internal */
   getLeft$(): Observable<ChromeNavControl[]>;
