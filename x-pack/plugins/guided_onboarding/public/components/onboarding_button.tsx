@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
 import {
   EuiPopover,
@@ -47,6 +47,13 @@ const getConfig = (state?: GuidedOnboardingState): GuideConfig | undefined => {
   return undefined;
 };
 
+const getStepLabel = (state?: GuidedOnboardingState): string => {
+  if (state?.active_step && Number(state.active_step) > 0) {
+    return `: Step ${state.active_step}`;
+  }
+  return '';
+};
+
 const getStepStatus = (stepIndex: number, activeStep?: string): StepStatus => {
   if (isNaN(Number(activeStep))) {
     return 'incomplete';
@@ -64,12 +71,24 @@ export const GuidedOnboardingButton = ({ api }: Props) => {
     GuidedOnboardingState | undefined
   >(undefined);
 
+  const firstRender = useRef(true);
+
   useEffect(() => {
     const subscription = api.fetchGuideState$().subscribe((newState) => {
+      if (
+        guidedOnboardingState?.active_guide !== newState.active_guide ||
+        guidedOnboardingState?.active_step !== newState.active_step
+      ) {
+        if (firstRender.current) {
+          firstRender.current = false;
+        } else {
+          setIsPopoverOpen(true);
+        }
+      }
       setGuidedOnboardingState(newState);
     });
     return () => subscription.unsubscribe();
-  }, [api]);
+  }, [api, guidedOnboardingState?.active_guide, guidedOnboardingState?.active_step]);
 
   const { euiTheme } = useEuiTheme();
 
@@ -94,12 +113,13 @@ export const GuidedOnboardingButton = ({ api }: Props) => {
   `;
 
   const guideConfig = getConfig(guidedOnboardingState);
+  const stepLabel = getStepLabel(guidedOnboardingState);
 
   return guideConfig ? (
     <EuiPopover
       button={
         <EuiButton onClick={togglePopover} color="success" fill>
-          Guided setup
+          Guided setup{stepLabel}
         </EuiButton>
       }
       isOpen={isPopoverOpen}
@@ -150,7 +170,12 @@ export const GuidedOnboardingButton = ({ api }: Props) => {
 
           return (
             <div>
-              <EuiAccordion id={accordionId} buttonContent={buttonContent} arrowDisplay="right">
+              <EuiAccordion
+                id={accordionId}
+                buttonContent={buttonContent}
+                arrowDisplay="right"
+                forceState={stepStatus === 'in_progress' ? 'open' : 'closed'}
+              >
                 <>
                   <EuiSpacer size="s" />
                   <EuiText size="s">{step.description}</EuiText>

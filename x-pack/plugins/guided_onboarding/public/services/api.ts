@@ -33,7 +33,7 @@ export class ApiService {
     );
   }
 
-  public async updateGuideState$(newState: GuidedOnboardingState) {
+  public async updateGuideState(newState: GuidedOnboardingState) {
     if (!this.client) {
       throw new Error('ApiService has not be initialized.');
     }
