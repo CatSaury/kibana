@@ -27,12 +27,16 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 
+import type { ApplicationStart } from '@kbn/core/public/application/types';
+import { HttpStart } from '@kbn/core-http-browser';
 import { guidesConfig } from '../constants';
 import type { GuideConfig, StepStatus, GuidedOnboardingState } from '../types';
-import { ApiService } from '../services/api';
+import type { ApiService } from '../services/api';
 
 interface Props {
   api: ApiService;
+  application: ApplicationStart;
+  http: HttpStart;
 }
 
 const getConfig = (state?: GuidedOnboardingState): GuideConfig | undefined => {
@@ -61,12 +65,7 @@ export const GuidedOnboardingButton = ({ api }: Props) => {
   >(undefined);
 
   useEffect(() => {
-    const fetchData = async () => await api.fetchGuideState();
-    fetchData();
-  }, [api]);
-
-  useEffect(() => {
-    const subscription = api.onboardingGuideState$.subscribe((newState) => {
+    const subscription = api.fetchGuideState$().subscribe((newState) => {
       setGuidedOnboardingState(newState);
     });
     return () => subscription.unsubscribe();

@@ -20,14 +20,14 @@ export const searchConfig: GuideConfig = {
       title: 'Add data',
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ligula enim, malesuada a finibus vel, cursus sed risus. Vivamus pretium, elit dictum lacinia aliquet, libero nibh dictum enim, a rhoncus leo magna in sapien.',
-      url: '',
+      url: '/app/guidedOnboardingExample',
     },
     {
       id: 'search_experience',
       title: 'Build a search experience',
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ligula enim, malesuada a finibus vel, cursus sed risus. Vivamus pretium, elit dictum lacinia aliquet, libero nibh dictum enim, a rhoncus leo magna in sapien.',
-      url: '/app/observability/alerts',
+      url: '/app/guidedOnboardingExample/stepTwo',
     },
     {
       id: 'optimize',

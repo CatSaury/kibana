@@ -6,33 +6,31 @@
  */
 
 import { HttpSetup } from '@kbn/core/public';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map, from, concatMap, of } from 'rxjs';
 
 import { API_BASE_PATH } from '../../common';
 import { GuidedOnboardingState } from '../types';
 
 export class ApiService {
   private client: HttpSetup | undefined;
-  public onboardingGuideState$!: BehaviorSubject<GuidedOnboardingState | undefined>;
+  private onboardingGuideState$!: BehaviorSubject<GuidedOnboardingState | undefined>;
 
   public setup(httpClient: HttpSetup): void {
     this.client = httpClient;
     this.onboardingGuideState$ = new BehaviorSubject<GuidedOnboardingState | undefined>(undefined);
   }
 
-  public async fetchGuideState() {
-    if (!this.client) {
-      throw new Error('ApiService has not be initialized.');
-    }
-
-    try {
-      const { state: guideState } = await this.client.get<{ state: GuidedOnboardingState }>(
-        `${API_BASE_PATH}/state`
-      );
-      this.onboardingGuideState$.next(guideState);
-    } catch (e) {
-      // TODO handle error
-    }
+  public fetchGuideState$() {
+    // TODO add error handling if this.client has not been initialized or request fails
+    return this.onboardingGuideState$.pipe(
+      concatMap((state) =>
+        state === undefined
+          ? from(this.client!.get<{ state: GuidedOnboardingState }>(`${API_BASE_PATH}/state`)).pipe(
+              map((response) => response.state)
+            )
+          : of(state)
+      )
+    );
   }
 
   public async updateGuideState$(newState: GuidedOnboardingState) {
