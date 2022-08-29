@@ -14,7 +14,7 @@ import { GuidedOnboardingPlugin } from './plugin';
 export function plugin() {
   return new GuidedOnboardingPlugin();
 }
-export {
+export type {
   GuidedOnboardingPluginSetup,
   GuidedOnboardingPluginStart,
   GuidedOnboardingState,

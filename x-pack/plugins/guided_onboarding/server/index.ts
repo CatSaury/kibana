@@ -15,4 +15,4 @@ export function plugin(initializerContext: PluginInitializerContext) {
   return new GuidedOnboardingPlugin(initializerContext);
 }
 
-export { GuidedOnboardingPluginSetup, GuidedOnboardingPluginStart } from './types';
+export type { GuidedOnboardingPluginSetup, GuidedOnboardingPluginStart } from './types';
