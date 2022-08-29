@@ -29,6 +29,7 @@ import {
 
 import type { ApplicationStart } from '@kbn/core/public/application/types';
 import { HttpStart } from '@kbn/core-http-browser';
+import { i18n } from '@kbn/i18n';
 import { guidesConfig } from '../constants';
 import type { GuideConfig, StepStatus, GuidedOnboardingState } from '../types';
 import type { ApiService } from '../services/api';
@@ -64,8 +65,9 @@ const getStepStatus = (stepIndex: number, activeStep?: string): StepStatus => {
   return Number(activeStep) > stepIndex + 1 ? 'complete' : 'incomplete';
 };
 
-export const GuidedOnboardingButton = ({ api }: Props) => {
+export const GuidedOnboardingButton = ({ api, application, http }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [showStartButton, setShowStartButton] = useState(true);
 
   const [guidedOnboardingState, setGuidedOnboardingState] = useState<
     GuidedOnboardingState | undefined
@@ -115,11 +117,26 @@ export const GuidedOnboardingButton = ({ api }: Props) => {
   const guideConfig = getConfig(guidedOnboardingState);
   const stepLabel = getStepLabel(guidedOnboardingState);
 
+  const startGuide = () => {
+    const activeStep = Number(guidedOnboardingState?.active_step) + 1;
+    const activeStepConfig = guideConfig?.steps[activeStep];
+    const basePath = http.basePath.get();
+    if (activeStepConfig) {
+      setShowStartButton(false);
+      application.navigateToUrl(`${basePath}${activeStepConfig.url}`);
+    }
+  };
+
   return guideConfig ? (
     <EuiPopover
       button={
         <EuiButton onClick={togglePopover} color="success" fill>
-          Guided setup{stepLabel}
+          {i18n.translate('xpack.guidedOnboarding.guidedSetupButtonLabel', {
+            defaultMessage: 'Guided setup{stepLabel}',
+            values: {
+              stepLabel,
+            },
+          })}
         </EuiButton>
       }
       isOpen={isPopoverOpen}
@@ -137,7 +154,9 @@ export const GuidedOnboardingButton = ({ api }: Props) => {
           isDisabled={true}
           flush="left"
         >
-          Back to guides
+          {i18n.translate('xpack.guidedOnboarding.dropdownPanel.backToGuidesLink', {
+            defaultMessage: 'Back to guides',
+          })}
         </EuiButtonEmpty>
         <EuiTitle size="m">
           <h3>{guideConfig?.title}</h3>
@@ -179,18 +198,38 @@ export const GuidedOnboardingButton = ({ api }: Props) => {
                 <>
                   <EuiSpacer size="s" />
                   <EuiText size="s">{step.description}</EuiText>
+                  <EuiSpacer />
+                  {showStartButton && (
+                    <EuiFlexGroup justifyContent="flexEnd">
+                      <EuiFlexItem grow={false}>
+                        <EuiButton onClick={startGuide} fill>
+                          {/* TODO: Support for conditional "Continue" button label if user revists a step  */}
+                          {i18n.translate(
+                            'xpack.guidedOnboarding.dropdownPanel.startStepButtonLabel',
+                            {
+                              defaultMessage: 'Start',
+                            }
+                          )}
+                        </EuiButton>
+                      </EuiFlexItem>
+                    </EuiFlexGroup>
+                  )}
                 </>
               </EuiAccordion>
 
               {/* Do not show horizontal rule for last item */}
-              {guideConfig.steps.length - 1 !== index && <EuiHorizontalRule />}
+              {guideConfig.steps.length - 1 !== index && <EuiHorizontalRule margin="m" />}
             </div>
           );
         })}
         <EuiPopoverFooter>
           <EuiText size="xs" textAlign="center">
             <EuiTextColor color="subdued">
-              <p>{`Got questions? We're here to help.`}</p>
+              <p>
+                {i18n.translate('xpack.guidedOnboarding.dropdownPanel.footerDescription', {
+                  defaultMessage: `Got questions? We're here to help.`,
+                })}
+              </p>
             </EuiTextColor>
           </EuiText>
         </EuiPopoverFooter>
