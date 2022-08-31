@@ -7,8 +7,8 @@
 
 import { SavedObjectsType } from '@kbn/core/server';
 
-export const guidedSetupSavedObjectsType = 'GUIDED_SETUP_SAVED_OBJECTS_TYPE';
-export const guidedSetupSavedObjectsId = 'GUIDED_SETUP_SAVED_OBJECTS_ID';
+export const guidedSetupSavedObjectsType = 'guided-setup-state';
+export const guidedSetupSavedObjectsId = 'guided-setup-state-id';
 export const guidedSetupDefaultState = {
   active_guide: undefined,
   active_step: undefined,
