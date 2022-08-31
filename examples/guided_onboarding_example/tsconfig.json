@@ -1,5 +1,5 @@
 {
-  "extends": "../../../tsconfig.base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./target/types",
     "emitDeclarationOnly": true,
@@ -11,17 +11,14 @@
     "common/**/*",
     "public/**/*",
     "server/**/*",
-    "../../../typings/**/*",
+    "../../typings/**/*",
   ],
   "references": [
     {
-      "path": "../../../src/core/tsconfig.json"
+      "path": "../../src/core/tsconfig.json"
     },
     {
-      "path": "../guided_onboarding/tsconfig.json"
+      "path": "../../x-pack/plugins/guided_onboarding/tsconfig.json"
     },
-    // required plugins
-    // optional plugins
-    // required bundles
   ]
 }
