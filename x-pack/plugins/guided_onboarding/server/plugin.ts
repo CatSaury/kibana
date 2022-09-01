@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { PluginInitializerContext, CoreSetup, CoreStart, Plugin, Logger } from '@kbn/core/server';
+import { PluginInitializerContext, CoreSetup, Plugin, Logger } from '@kbn/core/server';
 
 import { GuidedOnboardingPluginSetup, GuidedOnboardingPluginStart } from './types';
 import { defineRoutes } from './routes';
@@ -33,7 +33,7 @@ export class GuidedOnboardingPlugin
     return {};
   }
 
-  public start(core: CoreStart) {
+  public start() {
     this.logger.debug('guidedOnboarding: Started');
     return {};
   }

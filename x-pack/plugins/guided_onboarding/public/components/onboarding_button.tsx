@@ -27,7 +27,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 
-import type { ApplicationStart } from '@kbn/core/public/application/types';
+import { ApplicationStart } from '@kbn/core-application-browser';
 import { HttpStart } from '@kbn/core-http-browser';
 import { i18n } from '@kbn/i18n';
 import { guidesConfig } from '../constants';

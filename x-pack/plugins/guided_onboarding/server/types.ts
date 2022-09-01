@@ -5,11 +5,8 @@
  * 2.0.
  */
 
-import { SavedObjectsClient } from '@kbn/core/server';
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface GuidedOnboardingPluginSetup {}
 
-export interface GuidedOnboardingPluginStart {
-  savedObjectsClient: SavedObjectsClient;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface GuidedOnboardingPluginStart {}
